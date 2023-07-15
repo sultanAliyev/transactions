@@ -1,0 +1,27 @@
+version: "3.3"
+
+services:
+  bank:
+    build: .
+    environment:
+      PORT: 8080
+      DB_HOST: db
+      DB_PORT: 5432
+      DATABASE: bank
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: bank
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 1s
