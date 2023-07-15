@@ -9,6 +9,7 @@ import com.earl.bank.exception.InvalidAmountException;
 import com.earl.bank.exception.InvalidCurrencyException;
 import com.earl.bank.mapper.AccountMapper;
 import com.earl.bank.mapper.BalanceMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -21,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class AccountServiceImpl implements AccountService {
 
     private final AccountMapper accountMapper;
@@ -38,9 +40,11 @@ public class AccountServiceImpl implements AccountService {
         var tempCurrency = new HashSet<>(Set.copyOf(account.getCurrency()));
         tempCurrency.removeAll(Arrays.stream(Currency.values()).collect(Collectors.toSet()));
         if (account.getCurrency().size() == 0 || tempCurrency.size() != 0) {
+            log.error("No currencies has been specified!");
             throw new InvalidCurrencyException();
         }
         if (account.getBaseBalance().compareTo(BigDecimal.ZERO) < 0){
+            log.error("Base amount can not be negative!");
             throw new InvalidAmountException();
         }
         var newAccount = new Account(account.getCustomerId(), account.getCountry());
@@ -49,6 +53,7 @@ public class AccountServiceImpl implements AccountService {
             var balance = new Balance(newAccount.getAccountId(), account.getBaseBalance() != null ? account.getBaseBalance() : BigDecimal.ZERO, currency);
             balanceMapper.createBalance(balance);
         });
+        log.info("New account has been created SUCCESSFULLY!");
         return getAccount(newAccount.getAccountId());
     }
 
