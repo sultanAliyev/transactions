@@ -7,7 +7,10 @@ import com.earl.bank.exception.InsufficientFundException;
 import com.earl.bank.exception.InvalidAmountException;
 import com.earl.bank.mapper.BalanceMapper;
 import com.earl.bank.mapper.TransactionMapper;
+
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -22,6 +25,8 @@ public class TransactionServiceImpl implements TransactionService {
     private final BalanceMapper balanceMapper;
     private final AccountService accountService;
 
+    Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
+
     @Autowired
     public TransactionServiceImpl(TransactionMapper transactionMapper, BalanceMapper balanceMapper, AccountService accountService) {
         this.transactionMapper = transactionMapper;
@@ -35,8 +40,8 @@ public class TransactionServiceImpl implements TransactionService {
             throws AccountNotFoundException, InvalidAmountException, InsufficientFundException {
         var accountSender = accountService.getAccount(transaction.getSenderId());
         var accountReceiver = accountService.getAccount(transaction.getReceiverId());
-        if (transaction.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            log.error("Base amount can not be negative!");
+        if (transaction.getAmount().compareTo(BigDecimal.ZERO) < 1) {
+            logger.error("Base amount can not be negative!");
             throw new InvalidAmountException();
         }
         var balanceComparison = balanceMapper.getBalance(
@@ -44,7 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
                 transaction.getCurrency()
         ).getAmount().subtract(transaction.getAmount()).compareTo(BigDecimal.ZERO);
             if (balanceComparison < 0) {
-                log.error("Insufficient funds on the account!");
+                logger.error("Insufficient funds on the account!");
                 throw new InsufficientFundException();
             }
             else {
@@ -69,7 +74,7 @@ public class TransactionServiceImpl implements TransactionService {
         );
         transactionMapper.createTransaction(newTransaction);
         newTransaction.setBalance(balance);
-        log.info("Transaction has been created SUCCESSFULLY!");
+        logger.info("Transaction has been created SUCCESSFULLY!");
         return newTransaction;
     }
 }

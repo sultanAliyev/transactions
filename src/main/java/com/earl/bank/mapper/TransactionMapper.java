@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface TransactionMapper {
     @Insert("INSERT INTO transactions(sender_id, receiver_id, amount, currency, description) " +
-            "VALUES(#{senderId},#{receiverId},#{amount},#{currency}::valid_currencies,#{description})")
+            "VALUES(#{senderId},#{receiverId},#{amount},#{currency},#{description})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void createTransaction(Transaction transaction);
 

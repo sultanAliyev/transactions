@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS accounts
     PRIMARY KEY (id)
 );
 
-CREATE TYPE valid_currencies AS ENUM ('EUR', 'USD');
+
 
 CREATE TABLE IF NOT EXISTS transactions
 (
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS transactions
     sender_id   INT              NOT NULL,
     receiver_id INT              NOT NULL,
     amount      NUMERIC          NOT NULL DEFAULT 0,
-    currency    valid_currencies NOT NULL,
+    currency    VARCHAR(3)          NOT NULL,
     description TEXT             NOT NULL,
     create_at   TIMESTAMP        NOT NULL DEFAULT now(),
     PRIMARY KEY (id),
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS transactions
 CREATE TABLE IF NOT EXISTS balances
 (
     id         SERIAL           NOT NULL,
-    currency   valid_currencies NOT NULL,
+    currency   VARCHAR(3)       NOT NULL,
     amount     NUMERIC          NOT NULL DEFAULT 0,
     account_id INT              NOT NULL,
     create_at  TIMESTAMP        NOT NULL DEFAULT now(),

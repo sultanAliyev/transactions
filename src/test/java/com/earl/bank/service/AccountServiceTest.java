@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -21,6 +22,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class AccountServiceTest {
     @MockBean
     AccountService accountService;
@@ -50,7 +52,7 @@ class AccountServiceTest {
         assertNotNull(account);
         Assertions.assertEquals(account.getCountry(), "Iran");
         Assertions.assertEquals(account.getCustomerId(), "1234");
-        Assertions.assertEquals(account.getBalances().size(), 2);
+        Assertions.assertEquals(account.getBalances().size(), 1);
         Assertions.assertEquals(account.getBalances().stream().mapToDouble(i -> i.getAmount().doubleValue()).sum(), 0d);
     }
 

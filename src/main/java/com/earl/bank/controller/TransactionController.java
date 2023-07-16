@@ -14,12 +14,10 @@ import org.springframework.web.bind.annotation.*;
 public class TransactionController {
 
     private final TransactionService transactionService;
-    private final AccountService accountService;
 
     @Autowired
-    public TransactionController(TransactionService transactionService, AccountService accountService) {
+    public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
-        this.accountService = accountService;
     }
 
     @PostMapping

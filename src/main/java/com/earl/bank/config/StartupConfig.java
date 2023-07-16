@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.Objects;
 
 @Configuration
 public class StartupConfig {
@@ -25,7 +24,7 @@ public class StartupConfig {
         Resource resource = applicationContext.getResource("classpath:init.sql");
         String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        ScriptUtils.executeSqlScript(Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection(), resource);
+        ScriptUtils.executeSqlScript(jdbcTemplate.getDataSource().getConnection(), resource);
         return "";
     }
 

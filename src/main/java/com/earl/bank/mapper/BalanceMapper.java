@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 @Mapper
 public interface BalanceMapper {
     @Insert("INSERT INTO balances(currency, amount, account_id)" +
-            "VALUES(#{currency}::valid_currencies, #{amount},#{accountId})")
+            "VALUES(#{currency}, #{amount},#{accountId})")
     void createBalance(Balance balance);
 
     @Update("UPDATE balances SET amount= amount+#{amount} " +
-            "WHERE account_id=#{accountId} AND currency=#{currency}::valid_currencies")
+            "WHERE account_id=#{accountId} AND currency=#{currency}")
     void increaseBalance(
             @Param("accountId") Long accountId,
             @Param("currency") Currency currency,
@@ -21,14 +21,14 @@ public interface BalanceMapper {
     );
 
     @Update("UPDATE balances SET amount= amount-#{amount} " +
-            "WHERE account_id=#{accountId} AND currency=#{currency}::valid_currencies AND amount > 0")
+            "WHERE account_id=#{accountId} AND currency=#{currency} AND amount > 0")
     void decreaseBalance(
             @Param("accountId") Long accountId,
             @Param("currency") Currency currency,
             @Param("amount") BigDecimal amount
     );
 
-    @Select("SELECT account_id, amount, currency FROM balances WHERE account_id=#{accountId} AND currency=#{currency}::valid_currencies")
+    @Select("SELECT account_id, amount, currency FROM balances WHERE account_id=#{accountId} AND currency=#{currency}")
     @Results(value = {
             @Result(property = "accountId", column = "account_id"),
             @Result(property = "amount", column = "amount"),
